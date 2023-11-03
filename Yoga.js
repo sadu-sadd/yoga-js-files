@@ -257,21 +257,21 @@ function Yoga() {
                 setErrorMessages(errorMessages);
                 
                 
-            
-                // if ('speechSynthesis' in window && errorMessages.length > 0) {
-                //   const synthesis = window.speechSynthesis;
-                //   utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
-                //   if (speechInProgress) {
-                //     window.speechSynthesis.cancel();
-                //     speechInProgress = false;
-                //   }
-                //   speechInProgress = true;
-                //   if(speechInProgress) {
-                //     synthesis.speak(utterance);
-                //   }
-                // } else {
-                //   console.log('Speech synthesis not supported in this browser.');
-                // }
+                
+                if ('speechSynthesis' in window && errorMessages.length > 0) {
+                  const synthesis = window.speechSynthesis;
+                  utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
+                  if (speechInProgress) {
+                    window.speechSynthesis.cancel();
+                    speechInProgress = false;
+                  }
+                  speechInProgress = true;
+                  if(speechInProgress) {
+                    synthesis.speak(utterance);
+                  }
+                } else {
+                  console.log('Speech synthesis not supported in this browser.');
+                }
             }
             if(classNo===0) {
               
