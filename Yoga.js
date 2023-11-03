@@ -274,7 +274,52 @@ function Yoga() {
                 // }
             }
             if(classNo===0) {
-              
+              // if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 45) {
+              //   skeletonColor = 'rgb(255,0,0)'
+              //   errorMessages.push("Straight your arms");
+              // }
+              // if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_ANKLE"]]) < 80) {
+              //   skeletonColor = 'rgb(255,0,0)'
+              //   errorMessages.push("Bend your knees angle");
+              // }
+              // if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_ANKLE"]]) > 95) {
+              //   skeletonColor = 'rgb(255,0,0)'
+              //   errorMessages.push("Rise your knee angle");
+              // }
+              if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) > 100) {
+                skeletonColor = 'rgb(255,0,0)'
+                let x2=calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]])
+                errorMessages.push(`Lift your torso angle: ${x2.toFixed(2)}`);
+              }
+              if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) < 70) {
+                skeletonColor = 'rgb(255,0,0)'
+                let x2=calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]])
+                errorMessages.push(`Bend your torso angle: ${x2.toFixed(2)}`);
+              }
+              // if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]]) > 65) {
+              //   skeletonColor = 'rgb(255,0,0)'
+              //   let x3=calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]])
+              //   errorMessages.push("Raise your arm angle");
+              // }
+              setErrorMessages(errorMessages);
+
+
+              // if ('speechSynthesis' in window && errorMessages.length > 0) {
+              //     const synthesis = window.speechSynthesis;
+              //     utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
+              //     if (speechInProgress) {
+              //       window.speechSynthesis.cancel();
+              //       speechInProgress = false;
+              //     }
+              //     speechInProgress = true;
+              //     if(speechInProgress) {
+              //       synthesis.speak(utterance);
+              //     }
+              //   } else {
+              //     console.log('Speech synthesis not supported in this browser.');
+              // }
+
+
             }
             flag = false
             // skeletonColor = 'rgb(255,255,255)'
