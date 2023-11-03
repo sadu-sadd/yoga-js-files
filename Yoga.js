@@ -121,6 +121,9 @@ function Yoga() {
         detectPose(detector, poseClassifier, countAudio)
     }, 100)
   }
+  
+  let utterance = null;
+  let speechInProgress = false;
 
   const detectPose = async (detector, poseClassifier, countAudio) => {
     if (
@@ -193,6 +196,8 @@ function Yoga() {
           const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
           return distance;
         }        
+
+        
         classification.array().then((data) => {         
           const classNo = CLASS_NO[currentPose]
           // console.log(input[POINTS["NOSE"]][0], input[POINTS["NOSE"]][1])
@@ -211,32 +216,65 @@ function Yoga() {
                 if(calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) > 45) {
                   skeletonColor = 'rgb(255,0,0)'
                   // let x=calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]])
-                  errorMessages.push ('Left arm angle is less than 90 degrees.');
+                  errorMessages.push ("Left arm angle is low");
                   
                 }
                 if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 45) {
                   skeletonColor = 'rgb(255,0,0)'
-                  errorMessages.push('Right arm angle is less than 90 degrees.');
+                  errorMessages.push("Right arm angle is low");
                   
                 }
                 if(calculateAngle(input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]]) > 45) {
                   skeletonColor = 'rgb(255,0,0)'
                   // let x=calculateAngle(input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]])
-                  errorMessages.push('Rise Right Arm Higher');
+                  errorMessages.push("Rise Right Arm Higher");
                   
                 }
                 if(calculateAngle(input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]]) > 45) {
                   skeletonColor = 'rgb(255,0,0)'
-                  errorMessages.push('Rise Left Arm Higher');
+                  errorMessages.push("Rise Left Arm Higher");
                 }
                 if(calculateDistance(input[POINTS["LEFT_WRIST"]],input[POINTS["RIGHT_WRIST"]])>30){
                   skeletonColor='rgb(255,0,0)'
-                  let x=calculateDistance(input[POINTS["LEFT_WRIST"]],input[POINTS["RIGHT_WRIST"]])
+                  // let x=calculateDistance(input[POINTS["LEFT_WRIST"]],input[POINTS["RIGHT_WRIST"]])
                   // errorMessages.push(`Distance between hands: ${x.toFixed(2)}`)
                   errorMessages.push("Join your hands")
-
+                }
+                let rightLegAngle = calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_ANKLE"]])
+                let leftLegAngle = calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_ANKLE"]])
+                if(rightLegAngle >=0 && rightLegAngle <= 10 && leftLegAngle >=0 && leftLegAngle <= 10) {
+                  skeletonColor = 'rgb(255,0,0)'
+                  errorMessages.push("Bend your knees")
+                }
+                else if(rightLegAngle<100 && leftLegAngle >=0 && leftLegAngle <= 10){
+                  skeletonColor = 'rgb(255,0,0)'
+                  errorMessages.push("Bend your Right knee")
+                }
+                else if(leftLegAngle<100 && rightLegAngle >=0 && rightLegAngle <= 10){
+                  skeletonColor = 'rgb(255,0,0)'
+                  errorMessages.push("Bend your Left knee")
                 }
                 setErrorMessages(errorMessages);
+                
+                
+            
+                // if ('speechSynthesis' in window && errorMessages.length > 0) {
+                //   const synthesis = window.speechSynthesis;
+                //   utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
+                //   if (speechInProgress) {
+                //     window.speechSynthesis.cancel();
+                //     speechInProgress = false;
+                //   }
+                //   speechInProgress = true;
+                //   if(speechInProgress) {
+                //     synthesis.speak(utterance);
+                //   }
+                // } else {
+                //   console.log('Speech synthesis not supported in this browser.');
+                // }
+            }
+            if(classNo===0) {
+              
             }
             flag = false
             // skeletonColor = 'rgb(255,255,255)'
