@@ -5,7 +5,7 @@ import backend from '@tensorflow/tfjs-backend-webgl'
 import Webcam from 'react-webcam'
 import { count } from '../../utils/music';
 import Instructions from '../../components/Instrctions/Instructions';
-
+import { Link } from 'react-router-dom'
 
 import './Yoga.css'
 
@@ -45,7 +45,13 @@ function Yoga() {
   const [currentPose, setCurrentPose] = useState('Chair')
   const [isStartPose, setIsStartPose] = useState(false)
   const [errorMessages, setErrorMessages] = useState(['Start Pose'])
+  const [currentView, setCurrentView] = useState('Front')
 
+  const currentViewRef = useRef(currentView);
+  const handleViewChange = (view) => {
+    setCurrentView(view)
+    currentViewRef.current = view
+  }
 
   useEffect(() => {
     const timeDiff = (currentTime - startingTime)/1000
@@ -117,15 +123,15 @@ function Yoga() {
     const poseClassifier = await tf.loadLayersModel(modelPath)
     const countAudio = new Audio(count)
     countAudio.loop = true
-    interval = setInterval(() => { 
-        detectPose(detector, poseClassifier, countAudio)
+    interval = setInterval(() => {
+      detectPose(detector, poseClassifier, countAudio, currentViewRef.current)
     }, 100)
   }
   
   let utterance = null;
   let speechInProgress = false;
 
-  const detectPose = async (detector, poseClassifier, countAudio) => {
+  const detectPose = async (detector, poseClassifier, countAudio, currentView) => {
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
@@ -207,6 +213,7 @@ function Yoga() {
         let errorMessages = []
         classification.array().then((data) => {         
           const classNo = CLASS_NO[currentPose]
+          
           // console.log(input[POINTS["NOSE"]][0], input[POINTS["NOSE"]][1])
           if(data[0][classNo] > 0.97) {
             
@@ -216,11 +223,12 @@ function Yoga() {
               flag = true
             }
             setCurrentTime(new Date(Date()).getTime())
-            errorMessages = [];
+            errorMessages = []
+            setErrorMessages(errorMessages)
             // ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); 
             skeletonColor = 'rgb(0,255,0)'
           } else {
-              if(classNo===6) {
+              if(classNo===6 && currentView==='Front') {
                 if(calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) > 45) {
                   skeletonColor = 'rgb(255,255,255)';
                   errorMessages.push ("Left arm angle is low");
@@ -281,7 +289,7 @@ function Yoga() {
                 // }
               }
 
-            if(classNo===0) {
+            if(classNo===0 && currentView==='Side') {
               if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 45) {
                 skeletonColor = 'rgb(255,0,0)';
                 errorMessages.push("Straight your arms");
@@ -332,6 +340,8 @@ function Yoga() {
 
             }
 
+
+
             flag = false
             // skeletonColor = 'rgb(255,255,255)'
             // countAudio.pause()
@@ -358,6 +368,27 @@ function Yoga() {
   if(isStartPose) {
     return (
       <div className="yoga-container">
+        <fieldset>
+        <div class="toggle">
+          <input 
+            type="radio"
+            value="Front"
+            checked={currentView === 'Front'}
+            onChange={() => handleViewChange('Front')}
+            id="front"
+          />
+          <label for="front">Front View</label>
+          <input 
+            type="radio"
+            value="Side"
+            checked={currentView === 'Side'}
+            onChange={() => handleViewChange('Side')} 
+            id="side"
+          />
+          <label for="side">Side View</label>
+        </div>
+        </fieldset>
+        
         <div>
           <Webcam 
           width='640px'
@@ -384,27 +415,27 @@ function Yoga() {
             }}
           >
           </canvas>
-        <div>
-            <img 
-              src={poseImages[currentPose]}
-              className="pose-img"
-            />
-        </div>
-        <div className="error-info">
-          {errorMessages.length > 0 && (
-          <ul>
-              {errorMessages.map((error, index) => (
-                  <li key={index}>{error}</li>
-              ))}
-          </ul>
-          )}
-        </div>
+          <div>
+              <img 
+                src={poseImages[currentPose]}
+                className="pose-img"
+              />
+          </div>
+          <div className="error-info">
+            {errorMessages.length > 0 && (
+            <ul>
+                {errorMessages.map((error, index) => (
+                    <li key={index}>{error}</li>
+                ))}
+            </ul>
+            )}
+          </div>
         </div>
           <button
             onClick={stopPose}
             className="secondary-btn"    
           >Stop Pose</button>
-        </div>
+      </div>
     )
   }
 
@@ -412,6 +443,14 @@ function Yoga() {
     <div
       className="yoga-container"
     >
+      <Link to='/'>
+                    <button 
+                        className='btn'
+                        id="home-btn"
+                    >
+                        Home
+                    </button>
+                </Link>
       <DropDown
         poseList={poseList}
         currentPose={currentPose}
