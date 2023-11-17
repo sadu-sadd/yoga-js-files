@@ -273,50 +273,79 @@ function Yoga() {
                 }
                 setErrorMessages(errorMessages);
                 
-                // if ('speechSynthesis' in window && errorMessages.length > 0) {
-                //   const synthesis = window.speechSynthesis;
-                //   utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
-                //   if (speechInProgress) {
-                //     window.speechSynthesis.cancel();
-                //     speechInProgress = false;
-                //   }
-                //   speechInProgress = true;
-                //   if(speechInProgress) {
-                //     synthesis.speak(utterance);
-                //   }
-                // } else {
-                //   console.log('Speech synthesis not supported in this browser.');
-                // }
+                if ('speechSynthesis' in window && errorMessages.length > 0) {
+                  const synthesis = window.speechSynthesis;
+                  utterance = new SpeechSynthesisUtterance(errorMessages.join('. '));
+                  if (speechInProgress) {
+                    window.speechSynthesis.cancel();
+                    speechInProgress = false;
+                  }
+                  speechInProgress = true;
+                  if(speechInProgress) {
+                    synthesis.speak(utterance);
+                  }
+                } else {
+                  console.log('Speech synthesis not supported in this browser.');
+                }
               }
+            
+            if(classNo===6 && currentView==='Side') {
+              if (calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) < 10 &&
+                  calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_ANKLE"]]) < 15 &&
+                  calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) > 40 ||
+                  calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) < 15 &&
+                  calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_ANKLE"]]) < 10 &&
+                  calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]]) > 40) {
+                  skeletonColor = 'rgb(0,255,0)';
+                }
+                if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 10) {
+                  skeletonColor = 'rgb(255,255,255)';
+                  errorMessages.push("Straighten your arms");
+                  drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 15, 'rgb(255,0,0)');
+                }
 
+                if(calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_ANKLE"]]) > 15) {
+                  skeletonColor = 'rgb(255,255,255)';
+                  errorMessages.push("Straighten your leg");
+                  drawCircle(ctx, keypoints[POINTS["LEFT_KNEE"]].x, keypoints[POINTS["LEFT_KNEE"]].y, 15, 'rgb(255,0,0)');
+                }
+                
+                if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) < 40) {
+                  skeletonColor = 'rgb(255,255,255)';
+                  errorMessages.push("Bend your knee");
+                  drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 15, 'rgb(255,0,0)');
+                }
+                
+                setErrorMessages(errorMessages)
+            }
             if(classNo===0 && currentView==='Side') {
               if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 45) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Straight your arms");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 15, 'rgb(255,0,0)');
               }
               if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_ANKLE"]]) < 80) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Bend your knees angle");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 15, 'rgb(255,0,0)');
               }
               if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_ANKLE"]]) > 95) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Rise your knee angle");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 15, 'rgb(255,0,0)');
               }
               if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) > 100) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Lift your torso");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_HIP"]].x, keypoints[POINTS["RIGHT_HIP"]].y, 15, 'rgb(255,0,0)');
               }
               if(calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) < 70) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Bend your torso");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_HIP"]].x, keypoints[POINTS["RIGHT_HIP"]].y, 15, 'rgb(255,0,0)');
               }
               if(calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]]) > 65) {
-                skeletonColor = 'rgb(255,0,0)';
+                skeletonColor = 'rgb(255,255,255)';
                 errorMessages.push("Raise your arm angle");
                 drawCircle(ctx, keypoints[POINTS["RIGHT_SHOULDER"]].x, keypoints[POINTS["RIGHT_SHOULDER"]].y, 15, 'rgb(255,0,0)');
               }
@@ -340,7 +369,147 @@ function Yoga() {
 
             }
 
+            if(classNo===0 && currentView==='Front') {
+              if (calculateAngle(input[POINTS["RIGHT_ANKLE"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_HIP"]]) > 10) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Bend your leg");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) > 20) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten your hand");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]]) > 8) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Bend your HIP");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+              }
+              if(calculateDistance(input[POINTS["LEFT_KNEE"]],input[POINTS["RIGHT_KNEE"]]) > 35){
+                skeletonColor='rgb(255,255,255)';
+                errorMessages.push("Join your knees");
+                drawCircle(ctx, keypoints[POINTS["LEFT_KNEE"]].x, keypoints[POINTS["LEFT_KNEE"]].y, 15, 'rgb(255,0,0)');
+                drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 15, 'rgb(255,0,0)');
+              }
+              if(calculateDistance(input[POINTS["LEFT_ANKLE"]],input[POINTS["RIGHT_ANKLE"]]) > 20){
+                skeletonColor='rgb(255,255,255)';
+                errorMessages.push("Join your ankles");
+                drawCircle(ctx, keypoints[POINTS["LEFT_ANKLE"]].x, keypoints[POINTS["LEFT_ANKLE"]].y, 15, 'rgb(255,0,0)');
+                drawCircle(ctx, keypoints[POINTS["RIGHT_ANKLE"]].x, keypoints[POINTS["RIGHT_ANKLE"]].y, 15, 'rgb(255,0,0)');
+              }
+              if(calculateDistance(input[POINTS["LEFT_WRIST"]],input[POINTS["RIGHT_WRIST"]]) > 35){
+                skeletonColor='rgb(255,255,255)';
+                errorMessages.push("Join your wrists");
+                drawCircle(ctx, keypoints[POINTS["LEFT_WRIST"]].x, keypoints[POINTS["LEFT_WRIST"]].y, 15, 'rgb(255,0,0)');
+                drawCircle(ctx, keypoints[POINTS["RIGHT_WRIST"]].x, keypoints[POINTS["RIGHT_WRIST"]].y, 15, 'rgb(255,0,0)');
+              }
+              if(calculateAngle(input[POINTS["RIGHT_ANKLE"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_HIP"]]) < 10 &&
+              calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) < 20 &&
+              calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]])  < 8 &&
+              calculateDistance(input[POINTS["LEFT_KNEE"]],input[POINTS["RIGHT_KNEE"]]) < 35 &&
+              calculateDistance(input[POINTS["LEFT_ANKLE"]],input[POINTS["RIGHT_ANKLE"]]) < 20 &&
+              calculateDistance(input[POINTS["LEFT_WRIST"]],input[POINTS["RIGHT_WRIST"]]) < 35){
+                skeletonColor = 'rgb(0,255,0)';
+              }
+              setErrorMessages(errorMessages)
+            }
 
+            if(classNo===1 && currentView==='Side') {
+              if (calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) > 20) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten right arm");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) > 20) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straight Left arm");
+                drawCircle(ctx, keypoints[POINTS["LEFT_ELBOW"]].x, keypoints[POINTS["LEFT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) < 30) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten right hip");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_HIP"]].x, keypoints[POINTS["RIGHT_HIP"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]]) < 30) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten left gaand");
+                drawCircle(ctx, keypoints[POINTS["LEFT_HIP"]].x, keypoints[POINTS["LEFT_HIP"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]]) < 130) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten left arm");
+                drawCircle(ctx, keypoints[POINTS["LEFT_SHOULDER"]].x, keypoints[POINTS["LEFT_SHOULDER"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]]) < 130) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Make hands perpendicular");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_SHOULDER"]].x, keypoints[POINTS["RIGHT_SHOULDER"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["RIGHT_ANKLE"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_HIP"]]) > 30) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straighten your legs");
+                drawCircle(ctx, keypoints[POINTS["RIGHT_KNEE"]].x, keypoints[POINTS["RIGHT_KNEE"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["LEFT_ANKLE"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_HIP"]]) > 30) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Straigthen your  legs");
+                drawCircle(ctx, keypoints[POINTS["LEFT_KNEE"]].x, keypoints[POINTS["LEFT_KNEE"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_WRIST"]]) < 20 &&
+                calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_WRIST"]]) < 20 &&
+                calculateAngle(input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_KNEE"]]) > 30 &&
+                calculateAngle(input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_KNEE"]]) > 30 &&
+                calculateAngle(input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_HIP"]]) > 130 &&
+                calculateAngle(input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_HIP"]]) > 130 &&
+                calculateAngle(input[POINTS["RIGHT_ANKLE"]], input[POINTS["RIGHT_KNEE"]], input[POINTS["RIGHT_HIP"]]) < 30 &&
+                calculateAngle(input[POINTS["LEFT_ANKLE"]], input[POINTS["LEFT_KNEE"]], input[POINTS["LEFT_HIP"]]) < 30) {
+                skeletonColor = 'rgb(0,255,0)';
+              }
+              setErrorMessages(errorMessages)
+            }
+
+            if(classNo===1 && currentView==='Front') {
+              if (calculateAngle(input[POINTS["RIGHT_WRIST"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]]) < 0 || 
+              calculateAngle(input[POINTS["RIGHT_WRIST"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]])>8) {
+              skeletonColor = 'rgb(255,255,255)';
+              errorMessages.push("Straighten right arm");
+              drawCircle(ctx, keypoints[POINTS["RIGHT_ELBOW"]].x, keypoints[POINTS["RIGHT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+            }
+              if(calculateAngle(input[POINTS["LEFT_WRIST"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]]) <0 ||
+              calculateAngle(input[POINTS["LEFT_WRIST"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]])>8) {
+              skeletonColor = 'rgb(255,255,255)';
+              errorMessages.push("Straighten left arm");
+              drawCircle(ctx, keypoints[POINTS["LEFT_ELBOW"]].x, keypoints[POINTS["LEFT_ELBOW"]].y, 20, 'rgb(255,0,0)');
+            }
+            if (calculateDistance(input[POINTS["LEFT_WRIST"]], input[POINTS["RIGHT_WRIST"]]) > 250 ||
+               200>calculateDistance(input[POINTS["LEFT_WRIST"]], input[POINTS["RIGHT_WRIST"]])){
+              skeletonColor='rgb(255,255,255)';
+              errorMessages.push("Adjust your hands");
+              drawCircle(ctx, keypoints[POINTS["LEFT_WRIST"]].x, keypoints[POINTS["LEFT_WRIST"]].y, 20, 'rgb(255,0,0)');
+              drawCircle(ctx, keypoints[POINTS["RIGHT_WRIST"]].x, keypoints[POINTS["RIGHT_WRIST"]].y, 20, 'rgb(255,0,0)');
+            }
+            if (calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]])<162) {
+              skeletonColor = 'rgb(255,255,255)';
+              errorMessages.push("Lower your body");
+              drawCircle(ctx, keypoints[POINTS["RIGHT_HIP"]].x, keypoints[POINTS["RIGHT_HIP"]].y, 20, 'rgb(255,0,0)');
+            }
+              if (calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]]) < 162) {
+                skeletonColor = 'rgb(255,255,255)';
+                errorMessages.push("Lower your body");
+                drawCircle(ctx, keypoints[POINTS["LEFT_HIP"]].x, keypoints[POINTS["LEFT_HIP"]].y, 20, 'rgb(255,0,0)');
+              }
+              if (calculateAngle(input[POINTS["RIGHT_WRIST"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]]) > 0 &&
+                calculateAngle(input[POINTS["RIGHT_WRIST"]], input[POINTS["RIGHT_ELBOW"]], input[POINTS["RIGHT_SHOULDER"]]) < 8 &&
+                calculateAngle(input[POINTS["LEFT_WRIST"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]]) > 0 &&
+                  calculateAngle(input[POINTS["LEFT_WRIST"]], input[POINTS["LEFT_ELBOW"]], input[POINTS["LEFT_SHOULDER"]]) < 8 &&
+                calculateDistance(input[POINTS["LEFT_WRIST"]], input[POINTS["RIGHT_WRIST"]]) < 250 &&
+                200 < calculateDistance(input[POINTS["LEFT_WRIST"]], input[POINTS["RIGHT_WRIST"]]) &&
+                calculateAngle(input[POINTS["RIGHT_HIP"]], input[POINTS["RIGHT_SHOULDER"]], input[POINTS["RIGHT_ELBOW"]]) >162 &&
+                calculateAngle(input[POINTS["LEFT_HIP"]], input[POINTS["LEFT_SHOULDER"]], input[POINTS["LEFT_ELBOW"]]) >162){
+                  skeletonColor = 'rgb(0,255,0)';
+                }
+              setErrorMessages(errorMessages)
+            }
 
             flag = false
             // skeletonColor = 'rgb(255,255,255)'
